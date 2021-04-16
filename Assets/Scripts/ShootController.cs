@@ -9,6 +9,7 @@ public class ShootController : MonoBehaviour
     public ParticleSystem collisionExplosionPrefab;
     public TrailRenderer bulletTrailPrefab;
     public float shootPeriod;
+    public LayerMask destructibleLayer;
     private Transform _transform;
     private RaycastHit _hitInfo;
     private bool _isHit;
@@ -32,6 +33,12 @@ public class ShootController : MonoBehaviour
 
             if (_isHit)
             {
+                GameObject hitObject = _hitInfo.collider.gameObject;
+                if (LayerMask.LayerToName(hitObject.layer) == "Destructible")
+                {
+                    Destroy(hitObject);
+                }
+
                 ParticleSystem collisionExplosion = Instantiate(collisionExplosionPrefab, _hitInfo.point, Quaternion.identity);
                 collisionExplosion.transform.rotation = Quaternion.LookRotation(_hitInfo.normal);
                 Destroy(collisionExplosion.gameObject, 1f);
